@@ -1,0 +1,169 @@
+//RailSim2 Train Plugin
+//Shibano Railway Series13000 by f_shib
+//not PBR
+
+PluginHeader{
+	RailSimVersion = 2.15;
+	PluginType = Train;
+	PluginName = "é≈ñÏìSìπ13000ån / Shibano Railway Series13000";
+	PluginAuthor = "NULL";
+	IconTexture = "";
+	Description = "";
+}
+
+TrainInfo{
+	FrontLimit = 10.0;
+	TailLimit = -10.0;
+	MaxVelocity = 130.0;
+	MaxAcceleration = 3.0;
+	MaxDeceleration = 4.0;
+	DoorClosingTime = 5.0;
+}
+
+//Switchi
+DefineSwitch "Power"{
+	Entry = "OFF";
+	Entry = "ON";
+}
+DefineSwitch "Car"{
+	Entry = "1çÜé‘(Tc1)";
+	Entry = "2çÜé‘(M1)";
+	Entry = "3çÜé‘(M2)";
+	Entry = "4çÜé‘(T1)";
+	Entry = "5çÜé‘(M3)";
+	Entry = "6çÜé‘(T2)";
+	Entry = "7çÜé‘(T1)";
+	Entry = "8çÜé‘(M1)";
+	Entry = "9çÜé‘(M2)";
+	Entry = "10çÜé‘(Tc2)";
+}
+DefineSwitch "Type"{
+	Entry = "ñ≥ï\é¶";
+}
+DefineSwitch "Destination"{
+	Entry = "ñ≥ï\é¶";
+}
+DefineSwitch "Number"{
+	Entry = "1";
+	Entry = "2";
+	Entry = "3";
+	Entry = "5";
+	Entry = "7";
+	Entry = "11";
+	Entry = "13";
+	Entry = "17";
+	Entry = "19";
+	Entry = "34";
+	Entry = "";
+}
+
+PrimaryAssembly{
+	//Axle
+	Axle "AXLE1"{
+		ModelFileName = "models/axle.x";
+		Diameter = 0.86;
+		Symmetric = 12;
+		Coord = (7.85, 0.4207);
+	}
+	Axle "AXLE2"{
+		ModelFileName = "models/axle.x";
+		Diameter = 0.86;
+		Symmetric = 12;
+		Coord = (5.75, 0.4207);
+	}
+	Axle "AXLE3"{
+		ModelFileName = "models/axle.x";
+		Diameter = 0.86;
+		Symmetric = 12;
+		Coord = (-5.75, 0.4207);
+	}
+	Axle "AXLE4"{
+		ModelFileName = "models/axle.x";
+		Diameter = 0.86;
+		Symmetric = 12;
+		Coord = (-7.85, 0.4207);
+	}
+	
+	//Bogie(Im)
+	Body "DUMMY_BOGIE1"{
+		ModelFileName = "";
+		ModelScale = 1.0;
+		JointZY "AXLE1"{
+			AttachCoord = (0.0, 0.0);
+			LocalCoord = (1.05, 0.0);
+		}
+		JointZY "AXLE2"{
+			AttachCoord = (0.0, 0.0);
+			LocalCoord = (-1.05, 0.0);
+		}
+	}
+	Body "DUMMY_BOGIE2"{
+		ModelFileName = "";
+		ModelScale = 1.0;
+		JointZY "AXLE3"{
+			AttachCoord = (0.0, 0.0);
+			LocalCoord = (1.05, 0.0);
+		}
+		JointZY "AXLE4"{
+			AttachCoord = (0.0, 0.0);
+			LocalCoord = (-1.05, 0.0);
+		}
+	}
+	
+	//DummyBody
+	Body "DummyBody"{
+		ModelFileName = "";
+		ModelScale = 1.0;
+		Turn = yes;
+		JointZY "DUMMY_BOGIE1"{
+			AttachCoord = (0.0, 0.6);
+			LocalCoord = (-6.8, 1.0);
+		}
+		JointZY "DUMMY_BOGIE2"{
+			AttachCoord = (0.0, 0.6);
+			LocalCoord = (6.8, 1.0);
+		}
+	}
+	
+	//Bogie(Re)
+	Object3D "BOGIE1"{
+		ModelFileName = "";
+		ApplySwitch "Car"{
+			Case 0:
+				ChangeModel = "models/bogie_tx.x", 1.0;
+			Case 1:
+				ChangeModel = "models/bogie_m.x", 1.0;
+		}
+		Joint3D "DUMMY_BOGIE1"{
+			AttachCoord = (0.0, 0.0, 0.0);
+			LocalCoord = (0.0, 0.0, 0.0);
+		}
+	}
+	Object3D "BOGIE2"{
+		ModelFileName = "";
+		ApplySwitch "Car"{
+			Case 0:
+				ChangeModel = "models/bogie_t.x", 1.0;
+			Case 1:
+				ChangeModel = "models/bogie_m.x", 1.0;
+		}
+		Joint3D "DUMMY_BOGIE2"{
+			AttachCoord = (0.0, 0.0, 0.0);
+			LocalCoord = (0.0, 0.0, 0.0);
+		}
+	}
+	
+	//MainBody
+	Object3D "MAINBODY"{
+		ModelFileName = "";
+		Transparent = 3, 9;
+		ApplySwitch "Car"{
+			Case 0:
+				ChangeModel = "models/series13000_Tc1_test.x", 1.0;
+		}
+		Joint3D "DummyBody"{
+			AttachCoord = (0.0, 0.0, 0.0);
+			LocalCoord = (0.0, 0.0, 0.0);
+		}
+	}
+}

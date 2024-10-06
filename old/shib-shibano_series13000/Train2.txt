@@ -1,0 +1,643 @@
+//RailSim2 Train Plugin
+//Shibano Railway Series13000 by f_shib
+//not PBR
+
+PluginHeader{
+	RailSimVersion = 2.15;
+	PluginType = Train;
+	PluginName = "é≈ñÏìSìπ13000ån / Shibano Railway Series13000";
+	PluginAuthor = "NULL";
+	IconTexture = "";
+	Description = "";
+}
+
+TrainInfo{
+	FrontLimit = 10.0;
+	TailLimit = -10.0;
+	MaxVelocity = 130.0;
+	MaxAcceleration = 3.0;
+	MaxDeceleration = 4.0;
+	DoorClosingTime = 5.0;
+}
+
+//Switchi
+DefineSwitch "Power"{
+	GroupCommon = "shib_power";
+	Entry = "OFF";
+	Entry = "ON";
+}
+DefineSwitch "Car"{
+	Entry = "1çÜé‘(Tc1)";
+	Entry = "2çÜé‘(M1)";
+	Entry = "3çÜé‘(M2)";
+	Entry = "4çÜé‘(T1)";
+	Entry = "5çÜé‘(M3)";
+	Entry = "6çÜé‘(T2)";
+	Entry = "7çÜé‘(T1)";
+	Entry = "8çÜé‘(M1)";
+	Entry = "9çÜé‘(M2)";
+	Entry = "10çÜé‘(Tc2)";
+}
+DefineSwitch "Type"{
+	GroupCommon = "shib_type";
+	Entry = "ñ≥ï\é¶";
+	Entry = "âÒëó";
+	Entry = "ééâ^ì]";
+	Entry = "äeí‚";
+	Entry = "èÄâıë¨";
+	Entry = "âıë¨";
+	Entry = "èÄçs";
+	Entry = "ã}çs";
+	Entry = "[ñ¿éRìSìπ]ïÅí ";
+	Entry = "[ñ¿éRìSìπ]ã}çs";
+	Entry = "[ñ¿éRìSìπ]âıë¨ã}çs";
+}
+DefineSwitch "Destination"{
+	GroupCommon = "shib_dest";
+	Entry = "ñ≥ï\é¶";
+	Entry = "èçïlíÜâõ";
+	Entry = "é≈ñÏçëç€ãÛç`";
+	Entry = "[ñ¿éRìSìπ]ã‡éR";
+	Entry = "[ñ¿éRìSìπ]íÜë∫åˆâÄ";
+	Entry = "[ñ¿éRìSìπ]êVãTéR";
+	Entry = "[ñ¿éRìSìπ]ìååKñº";
+}
+DefineSwitch "Number"{
+	GroupCommon = "shib_num";
+	Entry = "1";
+	Entry = "2";
+	Entry = "3";
+	Entry = "5";
+	Entry = "7";
+	Entry = "11";
+	Entry = "13";
+	Entry = "17";
+	Entry = "19";
+	Entry = "34";
+	Entry = "";
+}
+DefineSwitch"Door"{
+	GroupCommon = "shib_door";
+	Entry = "ëSé©ìÆ";
+	Entry = "ç∂ë§ÇÇ†ÇØÇÈ";
+	Entry = "âEë§ÇÇ†ÇØÇÈ";
+	Entry = "óºë§ÇÇ†ÇØÇÈ";
+}
+
+PrimaryAssembly{
+	//Axle
+	Axle "AXLE1"{
+		ModelFileName = "models/axle.x";
+		Diameter = 0.86;
+		Symmetric = 12;
+		Coord = (7.85, 0.4207);
+	}
+	Axle "AXLE2"{
+		ModelFileName = "models/axle.x";
+		Diameter = 0.86;
+		Symmetric = 12;
+		Coord = (5.75, 0.4207);
+	}
+	Axle "AXLE3"{
+		ModelFileName = "models/axle.x";
+		Diameter = 0.86;
+		Symmetric = 12;
+		Coord = (-5.75, 0.4207);
+	}
+	Axle "AXLE4"{
+		ModelFileName = "models/axle.x";
+		Diameter = 0.86;
+		Symmetric = 12;
+		Coord = (-7.85, 0.4207);
+	}
+	
+	//Bogie(Im)
+	Body "DUMMY_BOGIE1"{
+		ModelFileName = "";
+		ModelScale = 1.0;
+		JointZY "AXLE1"{
+			AttachCoord = (0.0, 0.0);
+			LocalCoord = (1.05, 0.0);
+		}
+		JointZY "AXLE2"{
+			AttachCoord = (0.0, 0.0);
+			LocalCoord = (-1.05, 0.0);
+		}
+	}
+	Body "DUMMY_BOGIE2"{
+		ModelFileName = "";
+		ModelScale = 1.0;
+		JointZY "AXLE3"{
+			AttachCoord = (0.0, 0.0);
+			LocalCoord = (1.05, 0.0);
+		}
+		JointZY "AXLE4"{
+			AttachCoord = (0.0, 0.0);
+			LocalCoord = (-1.05, 0.0);
+		}
+	}
+	
+	//DummyBody
+	Body "DummyBody"{
+		ModelFileName = "";
+		ModelScale = 1.0;
+		Turn = yes;
+		JointZY "DUMMY_BOGIE1"{
+			AttachCoord = (0.0, 0.6);
+			LocalCoord = (-6.8, 1.0);
+		}
+		JointZY "DUMMY_BOGIE2"{
+			AttachCoord = (0.0, 0.6);
+			LocalCoord = (6.8, 1.0);
+		}
+	}
+	
+	//Bogie(Re)
+	Object3D "BOGIE1"{
+		ModelFileName = "models/bogie_t.x";
+		ApplySwitch "Car"{
+			Case 0:
+				ChangeModel = "models/bogie_tx.x", 1.0;
+			Case 1,2,4,7,8:
+				ChangeModel = "models/bogie_m.x", 1.0;
+		}
+		Joint3D "DUMMY_BOGIE1"{
+			AttachCoord = (0.0, 0.0, 0.0);
+			LocalCoord = (0.0, 0.0, 0.0);
+		}
+	}
+	Object3D "BOGIE2"{
+		ModelFileName = "models/bogie_t.x";
+		ApplySwitch "Car"{
+			Case 1,2,4,7,8:
+				ChangeModel = "models/bogie_m.x", 1.0;
+			Case 9:
+				ChangeModel = "models/bogie_tx.x", 1.0;
+				StaticRotation{
+					RotationAxis = (0.0, 1.0, 0.0);
+					RotationAngle = 180.0;
+				}
+		}
+		Joint3D "DUMMY_BOGIE2"{
+			AttachCoord = (0.0, 0.0, 0.0);
+			LocalCoord = (0.0, 0.0, 0.0);
+		}
+	}
+	
+	//UnderParts
+	Object3D "UNDER"{
+		ModelFileName = "models/u_T.x";
+		ApplySwitch "Car"{
+			Case 0:
+				ChangeModel = "models/u_Tc1.x", 1.0;
+			Case 1,7:
+				ChangeModel = "models/u_M1.x", 1.0;
+			Case 2,5,8:
+				ChangeModel = "models/u_M2T2.x", 1.0;
+			Case 4:
+				ChangeModel = "models/u_M3.x", 1.0;
+			Case 9:
+				ChangeModel = "models/u_Tc2.x", 1.0;
+		}
+		Joint3D "DummyBody"{
+			AttachCoord = (0.0, 0.0, 0.0);
+			LocalCoord = (0.0, 0.0, 0.0);
+		}
+	}
+	
+	//Pantograph
+	Object3D "PANTOGRAPH"{
+		ModelFileName = "";
+		If ("Car"==1)||("Car"==7){
+			If("Power"==0){
+				ChangeModel = "models/pt_M1_0.x", 1.0;
+			}Else{
+				ChangeModel = "models/pt_M1_1.x", 1.0;
+			}
+		}
+		If ("Car"==4){
+			If("Power"==0){
+				ChangeModel = "models/pt_M3_0.x", 1.0;
+			}Else{
+				ChangeModel = "models/pt_M3_1.x", 1.0;
+			}
+		}
+		Joint3D "DummyBody"{
+			AttachCoord = (0.0, 0.0, 0.0);
+			LocalCoord = (0.0, 0.0, 0.0);
+		}
+	}
+	
+	//MainBody
+	Object3D "MAINBODY"{
+		ModelFileName = "models/series13000_C.x";
+		Transparent = 3, 9,10,11,12;
+		ApplySwitch "Car"{
+			Case 0:
+				ChangeModel = "models/series13000_Tc1.x", 1.0;
+				ShiftTexture = 10, 0.057, 0;		//0-1shift
+			Case 1:
+				ShiftTexture = 10, 0.112, 0;		//0-2shift
+			Case 2:
+				ShiftTexture = 10, 0, 0.067;		//0-3shift
+			Case 3:
+				ShiftTexture = 10, 0.065, 0.067;	//0-4shift
+			Case 4:
+				ShiftTexture = 10, 0.131, 0.067;	//0-5shift
+			Case 5:
+				ShiftTexture = 10, 0, 0.134;		//0-6shift
+			Case 6:
+				ShiftTexture = 10, 0.059, 0.134;	//0-7shift
+			Case 7:
+				ShiftTexture = 10, 0.124, 0.134;	//0-8shift
+			Case 8:
+				ShiftTexture = 10, 0.188, 0.134;	//0-9shift
+			Case 9:
+				ChangeModel = "models/series13000_Tc2.x", 1.0;
+		}
+		ApplySwitch "Number"{
+			Case 0:
+				ShiftTexture = 12, 0.057, 0;		//0-1shift
+			Case 1:
+				ShiftTexture = 12, 0.112, 0;		//0-2shift
+			Case 2:
+				ShiftTexture = 12, 0, 0.067;		//0-3shift
+			Case 3:
+				ShiftTexture = 12, 0.131, 0.067;	//0-5shift
+			Case 4:
+				ShiftTexture = 12, 0.059, 0.134;	//0-7shift
+			Case 5:
+				ShiftTexture = 11, 0.057, 0;		//0-1shift
+				ShiftTexture = 12, 0.057, 0;		//0-1shift
+			Case 6:
+				ShiftTexture = 11, 0.057, 0;		//0-1shift
+				ShiftTexture = 12, 0, 0.067;		//0-3shift
+			Case 7:
+				ShiftTexture = 11, 0.057, 0;		//0-1shift
+				ShiftTexture = 12, 0.059, 0.134;	//0-7shift
+			Case 8:
+				ShiftTexture = 11, 0.057, 0;		//0-1shift
+				ShiftTexture = 12, 0.188, 0.134;	//0-9shift
+			Case 9:
+				ShiftTexture = 11, 0, 0.067;		//0-3shift
+				ShiftTexture = 12, 0.065, 0.067;	//0-4shift
+		}
+		If "Power" == 0{
+			ShiftTexture = 6, 0.149, -0.1;
+			ChangeTexture = 7, "textures/type.png";
+			ShiftTexture = 7, 0.297, -0.1;
+			ShiftTexture = 4, 0.047, 0.0;
+			ShiftTexture = 5, 0.047, 0.0;
+			ShiftTexture = 8, 0.0, -0.07;
+		}Else{
+			ApplySwitch"Destination"{
+				Case 0:
+					ChangeTexture = 7, "textures/type.png";
+					ShiftTexture = 7, 0.297, -0.1;
+				Case 1:
+					ShiftTexture = 7, 0.330, 0.3;
+				Case 2:
+					ShiftTexture = 7, 0.0, -0.1;
+				Case 3:
+					ShiftTexture = 7, 0.330, 0.0;
+					ChangeTexture = 7, "textures/sta_di.png";
+				Case 4:
+					ShiftTexture = 7, 0.330, 0.1;
+					ChangeTexture = 7, "textures/sta_di.png";
+				Case 5:
+					ShiftTexture = 7, 0.330, 0.2;
+					ChangeTexture = 7, "textures/sta_di.png";
+				Case 6:
+					ShiftTexture = 7, 0.330, -0.1;
+					ChangeTexture = 7, "textures/sta_di.png";
+				Case 7:
+					ShiftTexture = 7, 0.330, 0.3;
+					ChangeTexture = 7, "textures/sta_di.png";
+			}
+			ApplySwitch"Type"{
+				Case 0:
+					ShiftTexture = 6, 0.149, -0.1;
+					ShiftTexture = 4, 0.047, 0.0;
+					ShiftTexture = 5, 0.047, 0.0;
+				Case 1:
+					ShiftTexture = 6, 0.149, 0.0;
+					ChangeTexture = 7, "textures/type.png";
+					ShiftTexture = 7, 0.295, 0.0;
+					ShiftTexture = 4, 0.047, 0.0;
+				Case 2:
+					ShiftTexture = 6, 0.149, 0.1;
+					ChangeTexture = 7, "textures/type.png";
+					ShiftTexture = 7, 0.295, 0.1;
+					ShiftTexture = 4, 0.047, 0.0;
+				Case 3:
+					ShiftTexture = 6, 0.0, -0.1;
+					ShiftTexture = 4, 0.047, 0.0;
+					ShiftTexture = 5, 0.047, 0.0;
+				Case 4:
+					ShiftTexture = 5, 0.047, 0.0;
+				Case 5:
+					ShiftTexture = 6, 0.0, 0.1;
+					ShiftTexture = 5, 0.047, 0.0;
+				Case 6:
+					ShiftTexture = 6, 0.0, 0.2;
+				Case 7:
+					ShiftTexture = 6, 0.0, 0.3;
+				Case 8:
+					ShiftTexture = 6, 0.0, 0.8;
+					ShiftTexture = 4, 0.047, 0.0;
+					ShiftTexture = 5, 0.047, 0.0;
+				Case 9:
+					ShiftTexture = 6, 0.149, 0.4;
+					ShiftTexture = 4, 0.0, -0.151;
+					ShiftTexture = 5, 0.0, -0.151;
+				Case 10:
+					ShiftTexture = 6, 0.149, 0.5;
+					ShiftTexture = 4, 0.0, -0.151;
+					ShiftTexture = 5, 0.0, -0.151;
+			}
+			If "Car" == 0{
+				If "_FRONT" == 1{
+					ShiftTexture = 4, -0.047, 0.0;
+					ShiftTexture = 5, -0.047, 0.0;
+					ShiftTexture = 8, 0.0, -0.07;
+				}
+			}
+			If "Car" == 9{
+				If "_FRONT" == 0{
+					ShiftTexture = 4, -0.047, 0.0;
+					ShiftTexture = 5, -0.047, 0.0;
+					ShiftTexture = 8, 0.0, -0.07;
+				}
+			}
+		}
+		Joint3D "DummyBody"{
+			AttachCoord = (0.0, 0.0, 0.0);
+			LocalCoord = (0.0, 0.0, 0.0);
+		}
+	}
+	//Doors
+	Object3D "DOOR1R"{
+		ModelFileName = "models/door_1R.x";
+		If(("_DOOR1" == 1)&&("Door"==0))||("Door"==1)||("Door"==3){
+			StaticMove{
+				Displacement = (0.0, 0.0, 0.674);
+				AnimationTime = 4.0;
+			}
+		}
+		Joint3D "DummyBody"{
+			AttachCoord = (0.0, 0.0, 0.0);
+			LocalCoord = (0.0, 0.0, 0.0);
+		}
+	}
+	Object3D "DOOR1L"{
+		ModelFileName = "models/door_1L.x";
+		If(("_DOOR1" == 1)&&("Door"==0))||("Door"==1)||("Door"==3){
+			StaticMove{
+				Displacement = (0.0, 0.0, -0.674);
+				AnimationTime = 4.0;
+			}
+		}
+		Joint3D "DummyBody"{
+			AttachCoord = (0.0, 0.0, 0.0);
+			LocalCoord = (0.0, 0.0, 0.0);
+		}
+	}
+	Object3D "DOOR2R"{
+		ModelFileName = "models/door_2R.x";
+		If(("_DOOR2" == 1)&&("Door"==0))||("Door"==2)||("Door"==3){
+			StaticMove{
+				Displacement = (0.0, 0.0, -0.674);
+				AnimationTime = 4.0;
+			}
+		}
+		Joint3D "DummyBody"{
+			AttachCoord = (0.0, 0.0, 0.0);
+			LocalCoord = (0.0, 0.0, 0.0);
+		}
+	}
+	Object3D "DOOR2L"{
+		ModelFileName = "models/door_2L.x";
+		If(("_DOOR2" == 1)&&("Door"==0))||("Door"==2)||("Door"==3){
+			StaticMove{
+				Displacement = (0.0, 0.0, 0.674);
+				AnimationTime = 4.0;
+			}
+		}
+		Joint3D "DummyBody"{
+			AttachCoord = (0.0, 0.0, 0.0);
+			LocalCoord = (0.0, 0.0, 0.0);
+		}
+	}
+	
+	//Glasses
+	Object3D "GLASSES"{
+		ModelFileName = "models/glasses_C.x";
+		Transparent = 9;
+		ApplySwitch "Car"{
+			Case 0:
+				ChangeModel = "models/glasses_Tc1.x", 1.0;
+			Case 9:
+				ChangeModel = "models/glasses_Tc2.x", 1.0;
+		}
+		Joint3D "DummyBody"{
+			AttachCoord = (0.0, 0.0, 0.0);
+			LocalCoord = (0.0, 0.0, 0.0);
+		}
+	}
+	
+	//DoorGlasses
+	Object3D "GLASS-DOOR1R"{
+		ModelFileName = "models/door_1R-glass.x";
+		If(("_DOOR1" == 1)&&("Door"==0))||("Door"==1)||("Door"==3){
+			StaticMove{
+				Displacement = (0.0, 0.0, 0.674);
+				AnimationTime = 4.0;
+			}
+		}
+		Transparent = 9;
+		Joint3D "DummyBody"{
+			AttachCoord = (0.0, 0.0, 0.0);
+			LocalCoord = (0.0, 0.0, 0.0);
+		}
+	}
+	Object3D "GLASS-DOOR1L"{
+		ModelFileName = "models/door_1L-glass.x";
+		If(("_DOOR1" == 1)&&("Door"==0))||("Door"==1)||("Door"==3){
+			StaticMove{
+				Displacement = (0.0, 0.0, -0.674);
+				AnimationTime = 4.0;
+			}
+		}
+		Transparent = 9;
+		Joint3D "DummyBody"{
+			AttachCoord = (0.0, 0.0, 0.0);
+			LocalCoord = (0.0, 0.0, 0.0);
+		}
+	}
+	Object3D "GLASS-DOOR2R"{
+		ModelFileName = "models/door_2R-glass.x";
+		If(("_DOOR2" == 1)&&("Door"==0))||("Door"==2)||("Door"==3){
+			StaticMove{
+				Displacement = (0.0, 0.0, -0.674);
+				AnimationTime = 4.0;
+			}
+		}
+		Transparent = 9;
+		Joint3D "DummyBody"{
+			AttachCoord = (0.0, 0.0, 0.0);
+			LocalCoord = (0.0, 0.0, 0.0);
+		}
+	}
+	Object3D "GLASS-DOOR2L"{
+		ModelFileName = "models/door_2L-glass.x";
+		If(("_DOOR2" == 1)&&("Door"==0))||("Door"==2)||("Door"==3){
+			StaticMove{
+				Displacement = (0.0, 0.0, 0.674);
+				AnimationTime = 4.0;
+			}
+		}
+		Transparent = 9;
+		Joint3D "DummyBody"{
+			AttachCoord = (0.0, 0.0, 0.0);
+			LocalCoord = (0.0, 0.0, 0.0);
+		}
+	}
+	
+	If("Power"==1){
+		If("Car"==0)&&("_FRONT"==0){
+			Headlight{
+				AttachObject = "DummyBody";
+				SourceCoord = (-0.95, 3.0, -10.15);
+				Direction = (0.0, 0.0, -1.0);
+				MaxDistance = 5.0;
+				LensFlare{
+					StartAngle = 130.0;
+					Twinkle = 0.1;
+					Circle{
+						Distance = 0.0;
+						Radius = 0.075;
+						InnerColor = #ffffffff;
+						OuterColor = #00ffffff;
+					}
+				}
+			}
+			Headlight{
+				AttachObject = "DummyBody";
+				SourceCoord = (-0.95, 3.0, -10.15);
+				Direction = (0.0, 0.0, -1.0);
+				MaxDistance = 5.0;
+				LensFlare{
+					StartAngle = 130.0;
+					Twinkle = 0.1;
+					Hexagon{
+						Distance = 0.0;
+						Radius = 0.2;
+						InnerColor = #ffffffff;
+						OuterColor = #00ffffff;
+					}
+				}
+			}
+			Headlight{
+				AttachObject = "DummyBody";
+				SourceCoord = (0.95, 3.0, -10.15);
+				Direction = (0.0, 0.0, -1.0);
+				MaxDistance = 5.0;
+				LensFlare{
+					StartAngle = 130.0;
+					Twinkle = 0.1;
+					Circle{
+						Distance = 0.0;
+						Radius = 0.075;
+						InnerColor = #ffffffff;
+						OuterColor = #00ffffff;
+					}
+				}
+			}
+			Headlight{
+				AttachObject = "DummyBody";
+				SourceCoord = (0.95, 3.0, -10.15);
+				Direction = (0.0, 0.0, -1.0);
+				MaxDistance = 5.0;
+				LensFlare{
+					StartAngle = 130.0;
+					Twinkle = 0.1;
+					Hexagon{
+						Distance = 0.0;
+						Radius = 0.2;
+						InnerColor = #ffffffff;
+						OuterColor = #00ffffff;
+					}
+				}
+			}
+		}
+	}
+	
+	If("Power"==1){
+		If("Car"==9)&&("_FRONT"==1){
+			Headlight{
+				AttachObject = "DummyBody";
+				SourceCoord = (-0.95, 3.0, 10.15);
+				Direction = (0.0, 0.0, 1.0);
+				MaxDistance = 5.0;
+				LensFlare{
+					StartAngle = 130.0;
+					Twinkle = 0.1;
+					Circle{
+						Distance = 0.0;
+						Radius = 0.075;
+						InnerColor = #ffffffff;
+						OuterColor = #00ffffff;
+					}
+				}
+			}
+			Headlight{
+				AttachObject = "DummyBody";
+				SourceCoord = (-0.95, 3.0, 10.15);
+				Direction = (0.0, 0.0, 1.0);
+				MaxDistance = 5.0;
+				LensFlare{
+					StartAngle = 130.0;
+					Twinkle = 0.1;
+					Hexagon{
+						Distance = 0.0;
+						Radius = 0.2;
+						InnerColor = #ffffffff;
+						OuterColor = #00ffffff;
+					}
+				}
+			}
+			Headlight{
+				AttachObject = "DummyBody";
+				SourceCoord = (0.95, 3.0, 10.15);
+				Direction = (0.0, 0.0, 1.0);
+				MaxDistance = 5.0;
+				LensFlare{
+					StartAngle = 130.0;
+					Twinkle = 0.1;
+					Circle{
+						Distance = 0.0;
+						Radius = 0.075;
+						InnerColor = #ffffffff;
+						OuterColor = #00ffffff;
+					}
+				}
+			}
+			Headlight{
+				AttachObject = "DummyBody";
+				SourceCoord = (0.95, 3.0, 10.15);
+				Direction = (0.0, 0.0, 1.0);
+				MaxDistance = 5.0;
+				LensFlare{
+					StartAngle = 130.0;
+					Twinkle = 0.1;
+					Hexagon{
+						Distance = 0.0;
+						Radius = 0.2;
+						InnerColor = #ffffffff;
+						OuterColor = #00ffffff;
+					}
+				}
+			}
+		}
+	}
+}
