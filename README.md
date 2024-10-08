@@ -1,5 +1,5 @@
 # baf_RailSim2-Plugins
-RailSim2用プラグインの保管蔵
+RailSim2用プラグインの保管兼配布用リポジトリ
 
 ## 保管されているもの
 - `common`フォルダ
